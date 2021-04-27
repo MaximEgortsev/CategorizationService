@@ -21,7 +21,7 @@ namespace CategorizationDb
 				.AddFluentMigratorCore()
 				.ConfigureRunner(rb => rb
 					.AddPostgres()
-					.WithGlobalConnectionString("User ID=#####;Password=#####;Host=localhost;Port=5432;Database=Categorization;")
+					.WithGlobalConnectionString("User ID=postgres;Password=postgres;Host=localhost;Port=8001;Database=categorization;")
 					.ScanIn(typeof(AddCategorizationTable).Assembly).For.Migrations())
 				.AddLogging(lb => lb.AddFluentMigratorConsole())
 				.BuildServiceProvider(false);

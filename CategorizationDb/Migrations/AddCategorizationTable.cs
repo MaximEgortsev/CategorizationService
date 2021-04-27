@@ -1,21 +1,22 @@
-﻿using FluentMigrator;
+﻿using System.Runtime.InteropServices;
+using FluentMigrator;
 
 namespace CategorizationDb.Migrations
 {
-	[Migration(1)]
+	[Migration(0)]
 	public class AddCategorizationTable : Migration
 	{
 		public override void Up()
 		{
 			Create.Table("categories")
-				.WithColumn("categoryId").AsInt32().PrimaryKey().Identity()
+				.WithColumn("categoryId").AsInt32().PrimaryKey()
 				.WithColumn("categoryName").AsString().NotNullable()
-				.WithColumn("parentId").AsInt32().ForeignKey("categories", "categoryId");
+				.WithColumn("parentId").AsInt32().Nullable().ForeignKey("categories", "categoryId");
 		}
 
 		public override void Down()
 		{
-			
+			Delete.Table("categories");
 		}
 	}
 }
