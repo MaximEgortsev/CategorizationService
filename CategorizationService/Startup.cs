@@ -1,3 +1,5 @@
+using CategorizationService.Db;
+using CategorizationService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +28,9 @@ namespace CategorizationService
 			});
 
 			var categorizationStoreManager = new CategorizationDbManager(Configuration["CategorizationDb"]);
-			services.AddSingleton<ICategorizationStoreManager>(categorizationStoreManager);
+			var categorizationService = new Services.CategorizationService(categorizationStoreManager);
+
+			services.AddSingleton<ICategorizationService>(categorizationService);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

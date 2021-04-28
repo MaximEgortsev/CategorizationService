@@ -15,11 +15,10 @@ namespace CategorizationService.DTO
 		{
 			var rootCategory = categories.Where(c => !c.ParentId.HasValue).ToList();
 
-
 			if (rootCategory.Count != 1)
 			{
 				//todo: graduate exception, log
-				throw new ();
+				return null;
 			}
 
 			var categoriesByParentIds = new Dictionary<int, List<Category>>();

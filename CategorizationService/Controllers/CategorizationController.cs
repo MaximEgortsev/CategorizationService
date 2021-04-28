@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using CategorizationService.DTO;
+using CategorizationService.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CategorizationService.Controllers
@@ -8,29 +9,29 @@ namespace CategorizationService.Controllers
 	[Route("[controller]")]
 	public class CategorizationController
 	{
-		private readonly ICategorizationStoreManager _categorizationStoreManager;
+		private readonly ICategorizationService _categorizationService;
 
-		public CategorizationController(ICategorizationStoreManager categorizationStoreManager)
+		public CategorizationController(ICategorizationService categorizationService)
 		{
-			_categorizationStoreManager = categorizationStoreManager;
+			_categorizationService = categorizationService;
 		}
 
 		[HttpGet("tree")]
 		public async Task<CategoryNode> GetCategorizationTree(int categoryId)
 		{
-			return await _categorizationStoreManager.GetCategoriesTree(categoryId);
+			return await _categorizationService.GetCategoriesTree(categoryId);
 		}
 
 		[HttpPost("add")]
 		public async Task AddCategory(int id, string name, int? parentId)
 		{
-			await _categorizationStoreManager.AddCategory(id, name, parentId);
+			await _categorizationService.AddCategory(id, name, parentId);
 		}
 
 		[HttpPost("update")]
 		public async Task UpdateCategory(int id, string name, int? parentId)
 		{
-			await _categorizationStoreManager.UpdateCategory(id, name, parentId);
+			await _categorizationService.UpdateCategory(id, name, parentId);
 		}
 	}
 }

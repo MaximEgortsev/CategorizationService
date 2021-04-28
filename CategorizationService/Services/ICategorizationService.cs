@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using CategorizationService.DTO;
 
-namespace CategorizationService
+namespace CategorizationService.Services
 {
-	public interface ICategorizationStoreManager
+	public interface ICategorizationService
 	{
 		Task<CategoryNode> GetCategoriesTree(int id);
 

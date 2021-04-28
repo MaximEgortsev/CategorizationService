@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CategorizationService.DTO;
 using Dapper;
 using Npgsql;
 
-namespace CategorizationService
+namespace CategorizationService.Db
 {
 	public class CategorizationDbManager : ICategorizationStoreManager
 	{
@@ -16,7 +17,7 @@ namespace CategorizationService
 			_connectionString = connectionString;
 		}
 
-		public async Task<CategoryNode> GetCategoriesTree(int id)
+		public async Task<List<Category>> GetCategoriesTree(int id)
 		{
 //			const string query = @"
 //WITH RECURSIVE cat(categoryId, categoryName, parentId) AS (
@@ -40,36 +41,22 @@ namespace CategorizationService
 				"SELECT * FROM cat";
 
 			await using var connection = new NpgsqlConnection(_connectionString);
-
-			var categories = (await connection.QueryAsync<Category>(query, new {id})).ToList();
-
-			if (categories.Count == 0)
-			{
-				//todo: log or send response  that categoryId does not exist
-				return null;
-			}
-
-			var t =  CategoryNode.Create(categories);
-			return t;
+			return (await connection.QueryAsync<Category>(query, new {id})).ToList();
 		}
 
 
-		public async Task AddCategory(int id, string name, int? parentId)
+		public async Task AddCategory(Category category)
 		{
 			const string query = @"
 INSERT INTO categories 
-VALUES (@id, @name, @parentId);";
+VALUES (@CategoryId, @CategoryName, @ParentId);";
 
+			//todo: add exc handling
 			await using var connection = new NpgsqlConnection(_connectionString);
-
-			//data consistency is checked at the database level (unique categoryId, correct parentId)
-			//todo: Should category name be unique? 
-			//todo: add exc handling \ additional checks to log or send response 
-
-			await connection.ExecuteAsync(query, new { id, name, parentId});
+			await connection.ExecuteAsync(query, category);
 		}
 
-		public async Task UpdateCategory(int id, string name, int? parentId)
+		public async Task UpdateCategory(Category category)
 		{
 			//			const string query = @"
 			//UPDATE categories 
@@ -78,16 +65,12 @@ VALUES (@id, @name, @parentId);";
 
 			var query =
 				"UPDATE categories" + Environment.NewLine +
-				"SET \"categoryName\" = @name, \"parentId\" = @parentId" + Environment.NewLine +
-				"WHERE \"categoryId\" = @id;";
+				"SET \"categoryName\" = @CategoryName, \"parentId\" = @ParentId" + Environment.NewLine +
+				"WHERE \"categoryId\" = @CategoryId;";
 
+			//todo: add exc handling
 			await using var connection = new NpgsqlConnection(_connectionString);
-
-			//data consistency is checked at the database level (unique categoryId, correct parentId)
-			//todo: add exc handling \ additional checks to log or send response
-			//todo: maybe we want update just one field or update not only by categoryId
-
-			await connection.ExecuteAsync(query, new { id, name, parentId });
+			await connection.ExecuteAsync(query, category);
 		}
 	}
 }

@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using FluentMigrator;
+﻿using FluentMigrator;
 
 namespace CategorizationDb.Migrations
 {
@@ -10,7 +9,7 @@ namespace CategorizationDb.Migrations
 		{
 			Create.Table("categories")
 				.WithColumn("categoryId").AsInt32().PrimaryKey()
-				.WithColumn("categoryName").AsString().NotNullable()
+				.WithColumn("categoryName").AsString().NotNullable() //todo: .Unique() ?
 				.WithColumn("parentId").AsInt32().Nullable().ForeignKey("categories", "categoryId");
 		}
 
